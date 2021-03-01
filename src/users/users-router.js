@@ -1,10 +1,18 @@
 const express = require('express');
 const path = require('path');
 const UsersService = require('./users-service');
+const { requireAuth } = require('../middleware/jwt-auth');
 const { TEAMS } = require('../config');
 
 const usersRouter = express.Router();
 const jsonBodyParser = express.json();
+
+usersRouter
+  .route('/articles')
+  .all(requireAuth)
+  .get((req, res, next) => {
+    return res.status(200);
+  });
 
 usersRouter.route('/').post(jsonBodyParser, (req, res, next) => {
   const { password, username, name, team } = req.body;

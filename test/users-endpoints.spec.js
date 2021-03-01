@@ -40,7 +40,7 @@ describe('Auth Endpoints', function () {
         it(`responds with a 400 error when ${field} is missing`, () => {
           delete registerAttempt[field];
           return supertest(app)
-            .post('/api/users')
+            .post('/api/user')
             .send(registerAttempt)
             .expect(400, {
               error: { message: `Missing '${field}' in request body` },
@@ -57,7 +57,7 @@ describe('Auth Endpoints', function () {
         };
 
         return supertest(app)
-          .post('/api/users')
+          .post('/api/user')
           .send(shortPassUser)
           .expect(400, {
             error: { message: 'Password must be longer than 8 characters' },
@@ -73,7 +73,7 @@ describe('Auth Endpoints', function () {
         };
 
         return supertest(app)
-          .post('/api/users')
+          .post('/api/user')
           .send(longPassUser)
           .expect(400, {
             error: { message: 'Password must be less than 72 characters' },
@@ -88,7 +88,7 @@ describe('Auth Endpoints', function () {
         };
 
         return supertest(app)
-          .post('/api/users')
+          .post('/api/user')
           .send(spaceBeforePassUser)
           .expect(400, {
             error: { message: 'Password must not start or end with a space' },
@@ -103,7 +103,7 @@ describe('Auth Endpoints', function () {
         };
 
         return supertest(app)
-          .post('/api/users')
+          .post('/api/user')
           .send(spaceAfterPassUser)
           .expect(400, {
             error: { message: 'Password must not start or end with a space' },
@@ -118,7 +118,7 @@ describe('Auth Endpoints', function () {
         };
 
         return supertest(app)
-          .post('/api/users')
+          .post('/api/user')
           .send(badPassUser)
           .expect(400, {
             error: {
@@ -136,7 +136,7 @@ describe('Auth Endpoints', function () {
         };
 
         return supertest(app)
-          .post('/api/users')
+          .post('/api/user')
           .send(takenPassUser)
           .expect(400, {
             error: {
@@ -155,7 +155,7 @@ describe('Auth Endpoints', function () {
       };
 
       return supertest(app)
-        .post('/api/users')
+        .post('/api/user')
         .send(takenPassUser)
         .expect(400, {
           error: {
@@ -174,7 +174,7 @@ describe('Auth Endpoints', function () {
         };
 
         return supertest(app)
-          .post('/api/users')
+          .post('/api/user')
           .send(newUser)
           .expect(201)
           .expect((response) => {
@@ -184,7 +184,7 @@ describe('Auth Endpoints', function () {
             expect(response.body.team).to.eql(newUser.team);
             expect(response.body).to.not.have.property('password');
             expect(response.headers.location).to.eql(
-              `/api/users/${response.body.id}`
+              `/api/user/${response.body.id}`
             );
           })
           .expect((response) => {
