@@ -11,7 +11,7 @@ usersRouter
   .route('/articles')
   .all(requireAuth)
   .get((req, res, next) => {
-    return res.status(200);
+    return res.status(200).json();
   });
 
 usersRouter.route('/').post(jsonBodyParser, (req, res, next) => {
