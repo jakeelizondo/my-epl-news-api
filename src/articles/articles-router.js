@@ -14,13 +14,11 @@ articlesRouter.route('/:teamCode').get((req, res, next) => {
       .json({ error: { message: 'Provided team not recognized by server' } });
   }
 
-  ArticlesService.getTeamArticles(
-    req.app.get('db'),
-    req.params.teamCode,
-    page
-  ).then((articles) => {
-    return res.status(200).json(ArticlesService.serializeArticles(articles));
-  });
+  ArticlesService.getTeamArticles(req.app.get('db'), req.params.teamCode, page)
+    .then((articles) => {
+      return res.status(200).json(ArticlesService.serializeArticles(articles));
+    })
+    .catch(next);
 });
 
 module.exports = articlesRouter;
