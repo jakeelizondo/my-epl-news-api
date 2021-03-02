@@ -207,7 +207,7 @@ describe('User Endpoints', function () {
     });
   });
 
-  describe.only('USER ARTICLES ENDPOINTS', () => {
+  describe('USER ARTICLES ENDPOINTS', () => {
     describe('GET /api/user/articles', () => {
       beforeEach('insert and fill tables', () => {
         return helpers.seedTestTables(db, testUsers, testArticles);

@@ -85,7 +85,7 @@ const UsersService = {
         })
         .andWhere({ article_id: deleteRecord.article_id })
         .del();
-      console.log(numRowsAffected);
+
       return numRowsAffected;
     } catch (err) {
       console.error(err);
