@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const UsersService = require('./users-service');
 const { requireAuth } = require('../middleware/jwt-auth');
-const { TEAMS } = require('../config');
+const { TEAMCODES } = require('../TEAMS');
 
 const usersRouter = express.Router();
 const jsonBodyParser = express.json();
@@ -11,7 +11,17 @@ usersRouter
   .route('/articles')
   .all(requireAuth)
   .get((req, res, next) => {
-    return res.status(200).json();
+    if (!req.user.team) {
+      return res
+        .status(400)
+        .json({ error: { message: 'No team attached to user' } });
+    }
+
+    UsersService.getUserArticles(req.app.get('db'), req.user.id).then(
+      (articles) => {
+        return res.status(200).json(articles);
+      }
+    );
   });
 
 usersRouter.route('/').post(jsonBodyParser, (req, res, next) => {
@@ -29,7 +39,7 @@ usersRouter.route('/').post(jsonBodyParser, (req, res, next) => {
 
   // validate team
 
-  if (!TEAMS.includes(team)) {
+  if (!TEAMCODES.includes(team)) {
     return res
       .status(400)
       .json({ error: { message: 'Invalid team submission' } });

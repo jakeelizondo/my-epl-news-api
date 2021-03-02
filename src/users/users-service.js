@@ -47,6 +47,26 @@ const UsersService = {
     const pass = await bcrypt.hash(password, 12);
     return pass;
   },
+
+  getUserArticles(db, id) {
+    return db
+      .select(
+        'articles.id',
+        'articles.team',
+        'articles.source',
+        'articles.author',
+        'articles.title',
+        'articles.description',
+        'articles.article_url',
+        'articles.image_url',
+        'articles.published_at',
+        'articles.content'
+      )
+      .from('articles')
+      .join('users_articles', { 'articles.id': 'users_articles.article_id' })
+      .join('users', { 'users.id': 'users_articles.user_id' })
+      .where({ 'users_articles.user_id': id });
+  },
 };
 
 module.exports = UsersService;

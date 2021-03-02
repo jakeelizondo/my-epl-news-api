@@ -1,0 +1,5 @@
+
+
+ALTER TABLE articles
+ALTER COLUMN published_at TYPE TIMESTAMPTZ;
+

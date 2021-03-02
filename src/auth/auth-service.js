@@ -14,10 +14,14 @@ const AuthService = {
   // use jwt library to generate jwt for a provided user
 
   makeJwt(user) {
-    return jwt.sign({ user_id: user.id }, process.env.JWT_SECRET, {
-      subject: user.username,
-      algorithm: 'HS256',
-    });
+    return jwt.sign(
+      { user_id: user.id, team: user.team },
+      process.env.JWT_SECRET,
+      {
+        subject: user.name,
+        algorithm: 'HS256',
+      }
+    );
   },
 
   // use jwt library to verify jwt came from server

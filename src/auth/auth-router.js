@@ -28,6 +28,11 @@ authRouter.post('/login', jsonBodyParser, (req, res, next) => {
         });
       }
 
+      // attach team to user to include in token
+
+      loginUser.team = user.team;
+      loginUser.name = user.name;
+
       //if user is valid, compare login password against db password
       return AuthService.comparePasswords(loginUser.password, user.password)
         .then((isMatch) => {

@@ -57,7 +57,7 @@ function makeTestArticlesArray() {
       description: 'test-description',
       article_url: 'https://test-url.com',
       image_url: 'https://test-image-url.com',
-      published_at: '2021-03-01T18:32:42Z',
+      published_at: '2021-03-01T05:00:00.000Z',
       content: 'test-article-content',
     },
     {
@@ -69,7 +69,7 @@ function makeTestArticlesArray() {
       description: 'test-description',
       article_url: 'https://test-url.com',
       image_url: 'https://test-image-url.com',
-      published_at: '2021-03-01T18:32:42Z',
+      published_at: '2021-03-01T05:00:00.000Z',
       content: 'test-article-content',
     },
     {
@@ -81,7 +81,7 @@ function makeTestArticlesArray() {
       description: 'test-description',
       article_url: 'https://test-url.com',
       image_url: 'https://test-image-url.com',
-      published_at: '2021-03-01T18:32:42Z',
+      published_at: '2021-03-01T05:00:00.000Z',
       content: 'test-article-content',
     },
     {
@@ -93,11 +93,13 @@ function makeTestArticlesArray() {
       description: 'test-description',
       article_url: 'https://test-url.com',
       image_url: 'https://test-image-url.com',
-      published_at: '2021-03-01T18:32:42Z',
+      published_at: '2021-03-01T05:00:00.000Z',
       content: 'test-article-content',
     },
   ];
 }
+
+function seedUsersArticles(db, usersArticles) {}
 
 // clean tables of db
 function cleanTables(db) {
@@ -145,6 +147,9 @@ function seedTestTables(db, users, articles) {
         `SELECT setval('articles_id_seq', ?)`,
         articles[articles.length - 1].id
       );
+    })
+    .then(() => {
+      return db.into('users_articles').insert({ user_id: 1, article_id: 2 });
     });
 }
 

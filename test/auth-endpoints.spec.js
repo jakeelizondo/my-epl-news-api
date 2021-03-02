@@ -73,6 +73,8 @@ describe('Auth Endpoints', function () {
       const validUser = {
         username: testUser.username,
         password: testUser.password,
+        name: testUser.name,
+        team: testUser.team,
       };
 
       // make a JWT token with the valid user to compare against

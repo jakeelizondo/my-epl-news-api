@@ -3,8 +3,9 @@ const supertest = require('supertest');
 const app = require('../src/app');
 const helpers = require('./test-helpers');
 const bcrypt = require('bcryptjs');
+const { JWT_SECRET } = require('../src/config');
 
-describe('Auth Endpoints', function () {
+describe('User Endpoints', function () {
   let db;
 
   const { testUsers, testArticles } = helpers.makeTestFixtures();
@@ -22,9 +23,9 @@ describe('Auth Endpoints', function () {
   before('cleanup', () => helpers.cleanTables(db));
   afterEach('cleanup', () => helpers.cleanTables(db));
 
-  describe('POST /api/users', () => {
+  describe('POST /api/user', () => {
     context('User Validation', () => {
-      beforeEach('insert tags and fill tables', () => {
+      beforeEach('insert and fill tables', () => {
         return helpers.seedTestTables(db, testUsers, testArticles);
       });
       const requiredFields = ['name', 'team', 'username', 'password'];
@@ -203,6 +204,34 @@ describe('Auth Endpoints', function () {
               });
           });
       });
+    });
+  });
+
+  describe.only('GET /api/user/articles', () => {
+    beforeEach('insert and fill tables', () => {
+      return helpers.seedTestTables(db, testUsers, testArticles);
+    });
+
+    it('responds with 200 and the user saved articles', () => {
+      let expectedResponse = [
+        {
+          id: 2,
+          team: 'EVE',
+          source: 'test-source',
+          author: 'test-author',
+          title: 'test-title',
+          description: 'test-description',
+          article_url: 'https://test-url.com',
+          image_url: 'https://test-image-url.com',
+          published_at: '2021-03-01T05:00:00.000Z',
+          content: 'test-article-content',
+        },
+      ];
+
+      return supertest(app)
+        .get('/api/user/articles')
+        .set('Authorization', helpers.makeAuthHeader(testUser, JWT_SECRET))
+        .expect(200, expectedResponse);
     });
   });
 });
