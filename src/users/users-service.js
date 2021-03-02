@@ -67,6 +67,30 @@ const UsersService = {
       .join('users', { 'users.id': 'users_articles.user_id' })
       .where({ 'users_articles.user_id': id });
   },
+
+  async addUserArticle(db, newRecord) {
+    let response = await db
+      .insert(newRecord)
+      .into('users_articles')
+      .returning('*');
+
+    return response;
+  },
+
+  async deleteUserArticle(db, deleteRecord) {
+    try {
+      const numRowsAffected = await db('users_articles')
+        .where({
+          user_id: deleteRecord.user_id,
+        })
+        .andWhere({ article_id: deleteRecord.article_id })
+        .del();
+      console.log(numRowsAffected);
+      return numRowsAffected;
+    } catch (err) {
+      console.error(err);
+    }
+  },
 };
 
 module.exports = UsersService;

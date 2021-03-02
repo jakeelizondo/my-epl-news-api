@@ -17,11 +17,59 @@ usersRouter
         .json({ error: { message: 'No team attached to user' } });
     }
 
-    UsersService.getUserArticles(req.app.get('db'), req.user.id).then(
-      (articles) => {
+    UsersService.getUserArticles(req.app.get('db'), req.user.id)
+      .then((articles) => {
         return res.status(200).json(articles);
-      }
-    );
+      })
+      .catch(next);
+  })
+  .post(jsonBodyParser, (req, res, next) => {
+    const { user_id, article_id } = req.body;
+
+    if (!user_id) {
+      return res.status(400).json({
+        error: { message: 'Missing user_id in request body' },
+      });
+    }
+    if (!article_id) {
+      return res.status(400).json({
+        error: { message: 'Missing article_id in request body' },
+      });
+    }
+
+    let newRecord = { user_id, article_id };
+
+    UsersService.addUserArticle(req.app.get('db'), newRecord)
+      .then(() => {
+        return res.status(201).json();
+      })
+      .catch(next);
+  })
+  .delete(jsonBodyParser, (req, res, next) => {
+    const { user_id, article_id } = req.body;
+
+    if (!user_id) {
+      return res.status(400).json({
+        error: { message: 'Missing user_id in request body' },
+      });
+    }
+    if (!article_id) {
+      return res.status(400).json({
+        error: { message: 'Missing article_id in request body' },
+      });
+    }
+
+    let deleteRecord = { user_id, article_id };
+
+    UsersService.deleteUserArticle(req.app.get('db'), deleteRecord)
+      .then((numRowsAffected) => {
+        if (numRowsAffected) {
+          return res.status(204).json();
+        } else {
+          next();
+        }
+      })
+      .catch(next);
   });
 
 usersRouter.route('/').post(jsonBodyParser, (req, res, next) => {

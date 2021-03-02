@@ -207,31 +207,172 @@ describe('User Endpoints', function () {
     });
   });
 
-  describe.only('GET /api/user/articles', () => {
-    beforeEach('insert and fill tables', () => {
-      return helpers.seedTestTables(db, testUsers, testArticles);
+  describe.only('USER ARTICLES ENDPOINTS', () => {
+    describe('GET /api/user/articles', () => {
+      beforeEach('insert and fill tables', () => {
+        return helpers.seedTestTables(db, testUsers, testArticles);
+      });
+
+      it('responds with 200 and the user saved articles', () => {
+        let expectedResponse = [
+          {
+            id: 2,
+            team: 'EVE',
+            source: 'test-source',
+            author: 'test-author',
+            title: 'test-title',
+            description: 'test-description',
+            article_url: 'https://test-url.com',
+            image_url: 'https://test-image-url.com',
+            published_at: '2021-03-01T05:00:00.000Z',
+            content: 'test-article-content',
+          },
+        ];
+
+        return supertest(app)
+          .get('/api/user/articles')
+          .set('Authorization', helpers.makeAuthHeader(testUser, JWT_SECRET))
+          .expect(200, expectedResponse);
+      });
     });
 
-    it('responds with 200 and the user saved articles', () => {
-      let expectedResponse = [
-        {
-          id: 2,
-          team: 'EVE',
-          source: 'test-source',
-          author: 'test-author',
-          title: 'test-title',
-          description: 'test-description',
-          article_url: 'https://test-url.com',
-          image_url: 'https://test-image-url.com',
-          published_at: '2021-03-01T05:00:00.000Z',
-          content: 'test-article-content',
-        },
-      ];
+    describe('POST /api/user/articles', () => {
+      beforeEach('insert and fill tables', () => {
+        return helpers.seedTestTables(db, testUsers, testArticles);
+      });
 
-      return supertest(app)
-        .get('/api/user/articles')
-        .set('Authorization', helpers.makeAuthHeader(testUser, JWT_SECRET))
-        .expect(200, expectedResponse);
+      const requiredFields = ['user_id', 'article_id'];
+      requiredFields.forEach((field) => {
+        it(`responds with 400 and missing ${field} if ${field} is not included in the request`, () => {
+          let request = {
+            user_id: 1,
+            article_id: 1,
+          };
+          delete request[field];
+
+          return supertest(app)
+            .post('/api/user/articles')
+            .set('Authorization', helpers.makeAuthHeader(testUser))
+            .send(request)
+            .expect(400, {
+              error: { message: `Missing ${field} in request body` },
+            });
+        });
+      });
+
+      it('responds with 201 and creates a record in the users_articles table', () => {
+        let request = {
+          user_id: testUser.id,
+          article_id: 1,
+        };
+        let expectedResponse = [
+          {
+            id: 1,
+            team: 'EVE',
+            source: 'test-source',
+            author: 'test-author',
+            title: 'test-title',
+            description: 'test-description',
+            article_url: 'https://test-url.com',
+            image_url: 'https://test-image-url.com',
+            published_at: '2021-03-01T05:00:00.000Z',
+            content: 'test-article-content',
+          },
+          {
+            id: 2,
+            team: 'EVE',
+            source: 'test-source',
+            author: 'test-author',
+            title: 'test-title',
+            description: 'test-description',
+            article_url: 'https://test-url.com',
+            image_url: 'https://test-image-url.com',
+            published_at: '2021-03-01T05:00:00.000Z',
+            content: 'test-article-content',
+          },
+        ];
+        return supertest(app)
+          .post('/api/user/articles')
+          .set('Authorization', helpers.makeAuthHeader(testUser))
+          .send(request)
+          .expect(201)
+          .then(() => {
+            return supertest(app)
+              .get('/api/user/articles')
+              .set(
+                'Authorization',
+                helpers.makeAuthHeader(testUser, JWT_SECRET)
+              )
+              .expect(200, expectedResponse);
+          });
+      });
+    });
+
+    describe('DELETE /api/user/articles', () => {
+      beforeEach('insert and fill tables', () => {
+        return helpers.seedTestTables(db, testUsers, testArticles);
+      });
+
+      const requiredFields = ['user_id', 'article_id'];
+      requiredFields.forEach((field) => {
+        it(`responds with 400 and missing ${field} if ${field} is not included in the request`, () => {
+          let request = {
+            user_id: 1,
+            article_id: 1,
+          };
+          delete request[field];
+
+          return supertest(app)
+            .delete('/api/user/articles')
+            .set('Authorization', helpers.makeAuthHeader(testUser))
+            .send(request)
+            .expect(400, {
+              error: { message: `Missing ${field} in request body` },
+            });
+        });
+      });
+
+      it('responds with 204 and deletes record in the users_articles table', () => {
+        let request = {
+          user_id: testUser.id,
+          article_id: 1,
+        };
+        let expectedResponse = [
+          {
+            id: 2,
+            team: 'EVE',
+            source: 'test-source',
+            author: 'test-author',
+            title: 'test-title',
+            description: 'test-description',
+            article_url: 'https://test-url.com',
+            image_url: 'https://test-image-url.com',
+            published_at: '2021-03-01T05:00:00.000Z',
+            content: 'test-article-content',
+          },
+        ];
+        return supertest(app)
+          .post('/api/user/articles')
+          .set('Authorization', helpers.makeAuthHeader(testUser))
+          .send(request)
+          .expect(201)
+          .then(() => {
+            return supertest(app)
+              .delete('/api/user/articles')
+              .set('Authorization', helpers.makeAuthHeader(testUser))
+              .send(request)
+              .expect(204)
+              .then(() => {
+                return supertest(app)
+                  .get('/api/user/articles')
+                  .set(
+                    'Authorization',
+                    helpers.makeAuthHeader(testUser, JWT_SECRET)
+                  )
+                  .expect(200, expectedResponse);
+              });
+          });
+      });
     });
   });
 });

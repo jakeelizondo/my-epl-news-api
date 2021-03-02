@@ -1,4 +1,6 @@
 const xss = require('xss');
+const { attachPaginate } = require('knex-paginate');
+attachPaginate();
 
 const ArticlesService = {
   serializeArticle(article) {
@@ -20,8 +22,21 @@ const ArticlesService = {
     return articles.map(this.serializeArticle);
   },
 
-  getTeamArticles(db, team) {
-    return db.select('*').from('articles').where({ team });
+  async getTeamArticles(db, team, page) {
+    try {
+      const result = await db
+        .select('*')
+        .from('articles')
+        .where({ team })
+        .paginate({
+          perPage: 10,
+          currentPage: page,
+        });
+
+      return result.data;
+    } catch (err) {
+      console.log(err);
+    }
   },
 
   insertArticle(db, article) {
