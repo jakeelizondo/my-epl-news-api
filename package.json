@@ -13,6 +13,9 @@
     "postdeploy": "npm run migrate:production",
     "deploy": "git push heroku master:main"
   },
+  "engines": {
+    "node": "12.19.0"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
