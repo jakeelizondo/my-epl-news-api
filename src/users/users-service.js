@@ -65,7 +65,8 @@ const UsersService = {
       .from('articles')
       .join('users_articles', { 'articles.id': 'users_articles.article_id' })
       .join('users', { 'users.id': 'users_articles.user_id' })
-      .where({ 'users_articles.user_id': id });
+      .where({ 'users_articles.user_id': id })
+      .orderBy('published_at', 'desc');
   },
 
   async addUserArticle(db, newRecord) {
