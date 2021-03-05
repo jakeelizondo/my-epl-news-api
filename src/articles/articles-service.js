@@ -28,6 +28,7 @@ const ArticlesService = {
         .select('*')
         .from('articles')
         .where({ team })
+        .orderBy('published_at', 'desc')
         .paginate({
           perPage: 10,
           currentPage: page,
