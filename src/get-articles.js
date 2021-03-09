@@ -21,7 +21,7 @@ let fromTime = now.toISOString();
 for (let i = 0; i < teamsLength; i++) {
   let teamname = TEAMS[i].teamname;
   let teamcode = TEAMS[i].teamcode;
-  let newsAPIQuery = `https://newsapi.org/v2/everything?qInTitle=${teamname}&sortBy=publishedAt&language=en&from=${fromTime}&apiKey=${NEWS_API_KEY}`;
+  let newsAPIQuery = `https://newsapi.org/v2/everything?qInTitle="${teamname}"-"cricket"-"Clinton"&sortBy=publishedAt&language=en&from=${fromTime}&apiKey=${NEWS_API_KEY}`;
 
   fetch(newsAPIQuery).then((res) => {
     if (!res.ok) {
