@@ -241,11 +241,10 @@ describe('User Endpoints', function () {
         return helpers.seedTestTables(db, testUsers, testArticles);
       });
 
-      const requiredFields = ['user_id', 'article_id'];
+      const requiredFields = ['article_id'];
       requiredFields.forEach((field) => {
         it(`responds with 400 and missing ${field} if ${field} is not included in the request`, () => {
           let request = {
-            user_id: 1,
             article_id: 1,
           };
           delete request[field];
@@ -255,7 +254,7 @@ describe('User Endpoints', function () {
             .set('Authorization', helpers.makeAuthHeader(testUser))
             .send(request)
             .expect(400, {
-              error: { message: `Missing ${field} in request body` },
+              error: { message: `Missing ${field}` },
             });
         });
       });
@@ -313,11 +312,10 @@ describe('User Endpoints', function () {
         return helpers.seedTestTables(db, testUsers, testArticles);
       });
 
-      const requiredFields = ['user_id', 'article_id'];
+      const requiredFields = ['article_id'];
       requiredFields.forEach((field) => {
         it(`responds with 400 and missing ${field} if ${field} is not included in the request`, () => {
           let request = {
-            user_id: 1,
             article_id: 1,
           };
           delete request[field];
@@ -327,7 +325,7 @@ describe('User Endpoints', function () {
             .set('Authorization', helpers.makeAuthHeader(testUser))
             .send(request)
             .expect(400, {
-              error: { message: `Missing ${field} in request body` },
+              error: { message: `Missing ${field}` },
             });
         });
       });

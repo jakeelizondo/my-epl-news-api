@@ -24,16 +24,17 @@ usersRouter
       .catch(next);
   })
   .post(jsonBodyParser, (req, res, next) => {
-    const { user_id, article_id } = req.body;
+    const { article_id } = req.body;
+    const user_id = req.user.id;
 
     if (!user_id) {
       return res.status(400).json({
-        error: { message: 'Missing user_id in request body' },
+        error: { message: 'Missing user_id' },
       });
     }
     if (!article_id) {
       return res.status(400).json({
-        error: { message: 'Missing article_id in request body' },
+        error: { message: 'Missing article_id' },
       });
     }
 
@@ -46,16 +47,17 @@ usersRouter
       .catch(next);
   })
   .delete(jsonBodyParser, (req, res, next) => {
-    const { user_id, article_id } = req.body;
+    const { article_id } = req.body;
+    const user_id = req.user.id;
 
     if (!user_id) {
       return res.status(400).json({
-        error: { message: 'Missing user_id in request body' },
+        error: { message: 'Missing user_id' },
       });
     }
     if (!article_id) {
       return res.status(400).json({
-        error: { message: 'Missing article_id in request body' },
+        error: { message: 'Missing article_id' },
       });
     }
 
