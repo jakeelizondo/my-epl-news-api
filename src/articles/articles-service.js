@@ -39,6 +39,17 @@ const ArticlesService = {
       console.log(err);
     }
   },
+  async getAllArticles(db) {
+    try {
+      const result = await db
+        .select('*')
+        .from('articles')
+        .orderBy('published_at', 'desc');
+      return result;
+    } catch (err) {
+      console.log(err);
+    }
+  },
 
   insertArticle(db, article) {
     return db.insert(article).into('articles');

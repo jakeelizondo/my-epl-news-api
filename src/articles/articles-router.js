@@ -13,6 +13,14 @@ articlesRouter.route('/').get((req, res, next) => {
     .catch(next);
 });
 
+articlesRouter.route('/all').get((req, res, next) => {
+  ArticlesService.getAllArticles(req.app.get('db'))
+    .then((articles) => {
+      return res.status(200).json(ArticlesService.serializeArticles(articles));
+    })
+    .catch(next);
+});
+
 articlesRouter.route('/:teamCode').get((req, res, next) => {
   const page = req.query.page || 1;
   // validate team
