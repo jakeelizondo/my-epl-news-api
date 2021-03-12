@@ -32,15 +32,15 @@ const typeDefs = gql`
 const resolvers = {
   Query: {
     articles: () => {
-      return fetch('http://localhost:8000/api/articles/all').then((res) =>
-        res.json()
-      );
+      return fetch(
+        'https://my-epl-news.herokuapp.com/api/articles/all'
+      ).then((res) => res.json());
     },
 
     teamArticles: (_, { team }) => {
-      return fetch(`http://localhost:8000/api/articles/${team}`).then((res) =>
-        res.json()
-      );
+      return fetch(
+        `https://my-epl-news.herokuapp.com/api/articles/${team}`
+      ).then((res) => res.json());
     },
   },
 };
