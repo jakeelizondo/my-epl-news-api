@@ -74,64 +74,117 @@ usersRouter
       .catch(next);
   });
 
-usersRouter.route('/').post(jsonBodyParser, (req, res, next) => {
-  const { password, username, name, team } = req.body;
+usersRouter
+  .route('/')
+  .post(jsonBodyParser, (req, res, next) => {
+    const { password, username, name, team } = req.body;
 
-  //validate required fields
+    //validate required fields
 
-  for (const field of ['name', 'team', 'username', 'password']) {
-    if (!req.body[field]) {
+    for (const field of ['name', 'team', 'username', 'password']) {
+      if (!req.body[field]) {
+        return res
+          .status(400)
+          .json({ error: { message: `Missing '${field}' in request body` } });
+      }
+    }
+
+    // validate team
+
+    if (!TEAMCODES.includes(team)) {
       return res
         .status(400)
-        .json({ error: { message: `Missing '${field}' in request body` } });
+        .json({ error: { message: 'Invalid team submission' } });
     }
-  }
 
-  // validate team
+    //validate password
 
-  if (!TEAMCODES.includes(team)) {
-    return res
-      .status(400)
-      .json({ error: { message: 'Invalid team submission' } });
-  }
+    const passwordError = UsersService.validatePassword(password);
+    if (passwordError) {
+      return res.status(400).json({ error: { message: passwordError } });
+    }
 
-  //validate password
+    //validate username not already in db
+    UsersService.hasUserWithUsername(req.app.get('db'), username)
+      .then((hasUserName) => {
+        if (hasUserName) {
+          return res.status(400).json({
+            error: {
+              message: 'Username already taken',
+            },
+          });
+        }
 
-  const passwordError = UsersService.validatePassword(password);
-  if (passwordError) {
-    return res.status(400).json({ error: { message: passwordError } });
-  }
-
-  //validate username not already in db
-  UsersService.hasUserWithUsername(req.app.get('db'), username)
-    .then((hasUserName) => {
-      if (hasUserName) {
-        return res.status(400).json({
-          error: {
-            message: 'Username already taken',
-          },
+        //if all pass, hash pass and insert user
+        return UsersService.hashPassword(password).then((hashPass) => {
+          const newUser = {
+            password: hashPass,
+            username,
+            name,
+            team,
+          };
+          return UsersService.insertUser(req.app.get('db'), newUser).then(
+            (user) => {
+              return res
+                .status(201)
+                .location(path.posix.join(req.originalUrl, `/${user.id}`))
+                .json(UsersService.serializeUser(user));
+            }
+          );
         });
-      }
+      })
+      .catch(next);
+  })
+  .patch(requireAuth, jsonBodyParser, async function (req, res, next) {
+    let user_id = req.user.id;
+    let { username, password, team } = req.body;
 
-      //if all pass, hash pass and insert user
-      return UsersService.hashPassword(password).then((hashPass) => {
-        const newUser = {
-          password: hashPass,
-          username,
-          name,
-          team,
-        };
-        return UsersService.insertUser(req.app.get('db'), newUser).then(
-          (user) => {
-            return res
-              .status(201)
-              .location(path.posix.join(req.originalUrl, `/${user.id}`))
-              .json(UsersService.serializeUser(user));
-          }
-        );
-      });
-    })
-    .catch(next);
-});
+    if (!username && !password && !team) {
+      return res
+        .status(400)
+        .json({ error: { message: 'Must include values to update' } });
+    }
+
+    //if password update, hash password before going into db
+    if (password) {
+      password = await UsersService.hashPassword(password);
+    }
+
+    const updateUser = { username, password, team };
+
+    // sanitize update user for empty fields
+    for (let key in updateUser) {
+      if (!updateUser[key]) {
+        delete updateUser[key];
+      }
+    }
+
+    const numRowsAffected = await UsersService.updateUser(
+      req.app.get('db'),
+      user_id,
+      updateUser
+    );
+
+    if (!numRowsAffected) {
+      return res.status(400).json({ error: { message: 'No fields updated' } });
+    } else {
+      return res.status(204).json();
+    }
+  })
+  .delete(requireAuth, (req, res, next) => {
+    let user_id = req.user.id;
+
+    UsersService.deleteUser(req.app.get('db'), user_id).then(
+      (numRowsAffected) => {
+        if (!numRowsAffected) {
+          return res
+            .status(400)
+            .json({ error: { message: 'User not recognized' } });
+        } else {
+          return res.status(204).json();
+        }
+      }
+    );
+  });
 
 module.exports = usersRouter;

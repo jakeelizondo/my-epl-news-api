@@ -4,6 +4,10 @@ const app = require('../src/app');
 const helpers = require('./test-helpers');
 const bcrypt = require('bcryptjs');
 const { JWT_SECRET } = require('../src/config');
+const jwt = require('jsonwebtoken');
+const UsersService = require('../src/users/users-service');
+const AuthService = require('../src/auth/auth-service');
+const config = require('../src/config');
 
 describe('User Endpoints', function () {
   let db;
@@ -22,6 +26,27 @@ describe('User Endpoints', function () {
   after('disconnect from db', () => db.destroy());
   before('cleanup', () => helpers.cleanTables(db));
   afterEach('cleanup', () => helpers.cleanTables(db));
+
+  describe('Auth ID check', () => {
+    beforeEach('insert and fill tables', () => {
+      return helpers.seedTestTables(db, testUsers, testArticles);
+    });
+    it('responds with 400 if id not recognized', () => {
+      let badUser = {
+        id: 1000,
+        username: 'test-user-1',
+        password: 'password1',
+        name: 'Test 1 first',
+        team: 'EVE',
+        date_created: '2023-01-18T16:28:32.615Z',
+      };
+
+      return supertest(app)
+        .patch('/api/user')
+        .set('Authorization', helpers.makeAuthHeader(badUser, JWT_SECRET))
+        .expect(400);
+    });
+  });
 
   describe('POST /api/user', () => {
     context('User Validation', () => {
@@ -204,6 +229,123 @@ describe('User Endpoints', function () {
               });
           });
       });
+    });
+  });
+
+  describe('PATCH /api/user', () => {
+    beforeEach('insert and fill tables', () => {
+      return helpers.seedTestTables(db, testUsers, testArticles);
+    });
+
+    it('responds with 400 if no fields sent', () => {
+      let updatedUser = {
+        username: undefined,
+        password: undefined,
+        name: undefined,
+      };
+      return supertest(app)
+        .patch('/api/user')
+        .set('Authorization', helpers.makeAuthHeader(testUser, JWT_SECRET))
+        .send(updatedUser)
+        .expect(400, { error: { message: 'Must include values to update' } });
+    });
+
+    it('responds with 204 and changes the user username', () => {
+      let userDiffUsername = {
+        username: 'test-user-test-new-username',
+      };
+      let updatedUser = {
+        username: 'test-user-test-new-username',
+        password: testUser.password,
+        name: testUser.name,
+        team: testUser.team,
+      };
+
+      return supertest(app)
+        .patch('/api/user')
+        .set('Authorization', helpers.makeAuthHeader(testUser, JWT_SECRET))
+        .send(userDiffUsername)
+        .expect(204)
+        .then(() => {
+          const expectedToken = AuthService.makeJwt(updatedUser);
+
+          return supertest(app)
+            .post('/api/auth/login')
+            .send(updatedUser)
+            .expect(200, { token: expectedToken });
+        });
+    });
+
+    it('responds with 204 and changes the user password', () => {
+      let userDiffPassword = {
+        password: 'test-user-test-new-password',
+      };
+
+      let updatedUser = {
+        username: testUser.username,
+        password: 'test-user-test-new-password',
+        team: testUser.team,
+      };
+
+      return supertest(app)
+        .patch('/api/user')
+        .set(
+          'Authorization',
+          helpers.makeAuthHeader(testUser, config.JWT_SECRET)
+        )
+        .send(userDiffPassword)
+        .expect(204)
+        .then(() => {
+          return supertest(app)
+            .post('/api/auth/login')
+            .send(updatedUser)
+            .expect(200);
+        });
+    });
+
+    it('responds with 204 and changes the user favorite team', () => {
+      let userDiffTeam = {
+        team: 'LEE',
+      };
+
+      let updatedUser = {
+        username: testUser.username,
+        password: testUser.password,
+        name: testUser.name,
+        team: 'LEE',
+      };
+
+      return supertest(app)
+        .patch('/api/user')
+        .set('Authorization', helpers.makeAuthHeader(testUser, JWT_SECRET))
+        .send(userDiffTeam)
+        .expect(204)
+        .then(() => {
+          const expectedToken = AuthService.makeJwt(updatedUser);
+
+          return supertest(app)
+            .post('/api/auth/login')
+            .send(updatedUser)
+            .expect(200, { token: expectedToken });
+        });
+    });
+  });
+
+  describe('DELETE /api/user', () => {
+    beforeEach('insert and fill tables', () => {
+      return helpers.seedTestTables(db, testUsers, testArticles);
+    });
+
+    it('responds with 204 and deletes user', () => {
+      return supertest(app)
+        .delete('/api/user')
+        .set('Authorization', helpers.makeAuthHeader(testUser, JWT_SECRET))
+        .expect(204)
+        .then(() => {
+          UsersService.getUserById(db, testUser.id).then(() => {
+            expect(400);
+          });
+        });
     });
   });
 

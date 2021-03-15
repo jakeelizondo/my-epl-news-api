@@ -20,6 +20,7 @@ const UsersService = {
       return 'Password must contain 1 upper case, lower case, number and special character';
     }
   },
+
   hasUserWithUsername(db, username) {
     return db('users')
       .where({ username })
@@ -28,6 +29,11 @@ const UsersService = {
         return !!user;
       });
   },
+
+  getUserById(db, id) {
+    return db('users').where({ id }).first();
+  },
+
   insertUser(db, newUser) {
     return db
       .insert(newUser)
@@ -35,6 +41,7 @@ const UsersService = {
       .returning('*')
       .then(([user]) => user);
   },
+
   serializeUser(user) {
     return {
       id: user.id,
@@ -46,6 +53,34 @@ const UsersService = {
   async hashPassword(password) {
     const pass = await bcrypt.hash(password, 12);
     return pass;
+  },
+
+  async updateUser(db, id, user) {
+    try {
+      const numRowsAffected = await db('users')
+        .where({
+          id,
+        })
+        .update(user);
+
+      return numRowsAffected;
+    } catch (err) {
+      console.error(err);
+    }
+  },
+
+  async deleteUser(db, id) {
+    try {
+      const numRowsAffected = await db('users')
+        .where({
+          id,
+        })
+        .del();
+
+      return numRowsAffected;
+    } catch (err) {
+      console.error(err);
+    }
   },
 
   getUserArticles(db, id) {
