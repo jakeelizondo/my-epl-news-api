@@ -147,6 +147,10 @@ usersRouter
 
     //if password update, hash password before going into db
     if (password) {
+      const passwordError = UsersService.validatePassword(password);
+      if (passwordError) {
+        return res.status(400).json({ error: { message: passwordError } });
+      }
       password = await UsersService.hashPassword(password);
     }
 
