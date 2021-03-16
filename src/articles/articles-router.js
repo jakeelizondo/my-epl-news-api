@@ -4,6 +4,12 @@ const { TEAMCODES } = require('../TEAMS');
 
 const articlesRouter = express.Router();
 
+// The standard way of doing HTTP routes is
+// /:resource_type
+// /:resource_type/:id
+// and etc. For this route, I think it makes more sense to make it
+// articlesRouter.route('/:teamCode/articles')
+// and make the below /all route just /
 articlesRouter.route('/').get((req, res, next) => {
   const page = req.query.page || 1;
   ArticlesService.getTeamArticles(req.app.get('db'), 'EVE', page)

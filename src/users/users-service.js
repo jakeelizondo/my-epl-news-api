@@ -3,6 +3,8 @@ const xss = require('xss');
 const bcrypt = require('bcryptjs');
 
 const UsersService = {
+  // I think validate password functions belong to the auth service since it deals
+  // with authentication. But good for encapsulating the logic.
   validatePassword(password) {
     if (password.length < 8) {
       return 'Password must be longer than 8 characters';
@@ -104,6 +106,10 @@ const UsersService = {
       .orderBy('published_at', 'desc');
   },
 
+  // As with in the articles service, I generally don't like to extract out
+  // query logic into a service if it's simple. It is easier to read this queryu
+  // in the router itself rather than having to open another file to understand
+  // what the query is doing.
   async addUserArticle(db, newRecord) {
     let response = await db
       .insert(newRecord)
@@ -113,6 +119,10 @@ const UsersService = {
     return response;
   },
 
+  // As with in the articles service, I generally don't like to extract out
+  // query logic into a service if it's simple. It is easier to read this queryu
+  // in the router itself rather than having to open another file to understand
+  // what the query is doing.
   async deleteUserArticle(db, deleteRecord) {
     try {
       const numRowsAffected = await db('users_articles')

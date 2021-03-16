@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require('../config');
 
+// Great job here
 const AuthService = {
   getUserWithUsername(db, username) {
     return db('users').where({ username }).first();
