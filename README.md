@@ -76,6 +76,7 @@ POST /api/user
 \
 
 
+
 ```http
 PATCH /api/user
 ```
@@ -89,6 +90,7 @@ PATCH /api/user
 \
 \
 
+
 ```http
 DELETE /api/user
 ```
@@ -98,6 +100,7 @@ Requires user to be logged in with JWT token in window storage.
 \
 \
 
+
 ```http
 GET /api/user/articles
 ```
@@ -106,6 +109,7 @@ Returns a JSON response containing all user saved articles from database.
 
 \
 \
+
 
 ```http
 POST /api/user/articles
@@ -118,6 +122,7 @@ POST /api/user/articles
 \
 \
 
+
 ```http
 DELETE /api/user/articles
 ```
@@ -128,6 +133,7 @@ DELETE /api/user/articles
 
 \
 \
+
 
 #### Auth endpoints
 
@@ -143,6 +149,7 @@ POST /api/auth/login
 \
 \
 
+
 #### Articles Endpoints
 
 ```http
@@ -154,6 +161,7 @@ Returns a JSON object containing all Everton articles from the database
 \
 \
 
+
 ```http
 GET /api/articles/all
 ```
@@ -163,6 +171,7 @@ Returns a JSON object containing all articles for all teams from the database
 \
 \
 
+
 ```http
 GET /api/articles/:teamCode
 ```
@@ -171,6 +180,7 @@ Returns a JSON object containing all articles for specified team from the databa
 
 \
 \
+
 
 #### GraphQL Endpoint
 
@@ -228,6 +238,7 @@ This query will respond with a similar response to the following:
 
 \
 \
+
 
 Query SPECIFIC TEAM articles
 
