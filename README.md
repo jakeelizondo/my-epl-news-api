@@ -54,7 +54,7 @@ Table of Contents:\
 [Users Endpoints](#user-endpoints)\
 [Auth Endpoints](#auth-endpoints)\
 [Articles Endpoints](#articles-endpoints)\
-[GraphQL Endpoints](#graphql-endpoints)\
+[GraphQL Endpoints](#graphql-endpoint)\
 [Status Codes](#status-codes)
 
 ---
