@@ -74,7 +74,7 @@ POST /api/user
 
 \
 \
-\
+
 
 ```http
 PATCH /api/user
@@ -86,7 +86,8 @@ PATCH /api/user
 | `password` | `string` | User desired password  |
 | `team`     | `string` | User favorite EPL team |
 
-
+\
+\
 
 ```http
 DELETE /api/user
@@ -94,7 +95,8 @@ DELETE /api/user
 
 Requires user to be logged in with JWT token in window storage.
 
-
+\
+\
 
 ```http
 GET /api/user/articles
@@ -102,7 +104,8 @@ GET /api/user/articles
 
 Returns a JSON response containing all user saved articles from database.
 
-
+\
+\
 
 ```http
 POST /api/user/articles
@@ -112,7 +115,8 @@ POST /api/user/articles
 | :----------- | :------- | :----------------------------------------------- |
 | `article_id` | `number` | **Required**. Id of article to be saved for user |
 
-
+\
+\
 
 ```http
 DELETE /api/user/articles
@@ -122,7 +126,8 @@ DELETE /api/user/articles
 | :----------- | :------- | :------------------------------------------------- |
 | `article_id` | `number` | **Required**. Id of article to be deleted for user |
 
-
+\
+\
 
 #### Auth endpoints
 
@@ -135,7 +140,8 @@ POST /api/auth/login
 | `username` | `string` | **Required**. User username |
 | `password` | `string` | **Required**. User password |
 
-
+\
+\
 
 #### Articles Endpoints
 
@@ -145,7 +151,8 @@ GET /api/articles
 
 Returns a JSON object containing all Everton articles from the database
 
-
+\
+\
 
 ```http
 GET /api/articles/all
@@ -153,7 +160,8 @@ GET /api/articles/all
 
 Returns a JSON object containing all articles for all teams from the database
 
-
+\
+\
 
 ```http
 GET /api/articles/:teamCode
@@ -161,7 +169,8 @@ GET /api/articles/:teamCode
 
 Returns a JSON object containing all articles for specified team from the database. Approved teamCodes can be found in https://github.com/jakeelizondo/my-epl-news-api/blob/master/src/TEAMS.js
 
-
+\
+\
 
 #### GraphQL Endpoint
 
@@ -217,7 +226,8 @@ This query will respond with a similar response to the following:
 }
 ```
 
-
+\
+\
 
 Query SPECIFIC TEAM articles
 
