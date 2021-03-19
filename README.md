@@ -73,7 +73,7 @@ POST /api/user
 | `team`     | `string` | **Required**. User favorite EPL team |
 
 <br />
-
+<br />
 
 
 ```http
