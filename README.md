@@ -86,8 +86,8 @@ PATCH /api/user
 | `password` | `string` | User desired password  |
 | `team`     | `string` | User favorite EPL team |
 
-\
-
+<br />
+<br />
 
 
 ```http
@@ -96,7 +96,8 @@ DELETE /api/user
 
 Requires user to be logged in with JWT token in window storage.
 
-\
+<br />
+<br />
 
 
 
@@ -106,7 +107,8 @@ GET /api/user/articles
 
 Returns a JSON response containing all user saved articles from database.
 
-\
+<br />
+<br />
 
 
 
@@ -118,7 +120,8 @@ POST /api/user/articles
 | :----------- | :------- | :----------------------------------------------- |
 | `article_id` | `number` | **Required**. Id of article to be saved for user |
 
-\
+<br />
+<br />
 
 
 
@@ -130,7 +133,8 @@ DELETE /api/user/articles
 | :----------- | :------- | :------------------------------------------------- |
 | `article_id` | `number` | **Required**. Id of article to be deleted for user |
 
-\
+<br />
+<br />
 
 
 
@@ -145,7 +149,8 @@ POST /api/auth/login
 | `username` | `string` | **Required**. User username |
 | `password` | `string` | **Required**. User password |
 
-\
+<br />
+<br />
 
 
 
@@ -157,7 +162,8 @@ GET /api/articles
 
 Returns a JSON object containing all Everton articles from the database
 
-\
+<br />
+<br />
 
 
 
@@ -167,7 +173,8 @@ GET /api/articles/all
 
 Returns a JSON object containing all articles for all teams from the database
 
-\
+<br />
+<br />
 
 
 
@@ -177,7 +184,8 @@ GET /api/articles/:teamCode
 
 Returns a JSON object containing all articles for specified team from the database. Approved teamCodes can be found in https://github.com/jakeelizondo/my-epl-news-api/blob/master/src/TEAMS.js
 
-\
+<br />
+<br />
 
 
 
@@ -235,7 +243,8 @@ This query will respond with a similar response to the following:
 }
 ```
 
-\
+<br />
+<br />
 
 
 
