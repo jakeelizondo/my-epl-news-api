@@ -72,8 +72,7 @@ POST /api/user
 | `name`     | `string` | **Required**. User name              |
 | `team`     | `string` | **Required**. User favorite EPL team |
 
-\
-\
+<br />
 
 
 
