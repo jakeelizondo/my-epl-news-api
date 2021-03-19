@@ -71,9 +71,9 @@ POST /api/user
 | `password` | `string` | **Required**. User desired password  |
 | `name`     | `string` | **Required**. User name              |
 | `team`     | `string` | **Required**. User favorite EPL team |
-
-
-
+\
+\
+\
 ```http
 PATCH /api/user
 ```
